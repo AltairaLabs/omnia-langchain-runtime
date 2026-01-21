@@ -1,0 +1,73 @@
+{
+  "$schema": "https://promptpack.org/schema/v1/promptpack.schema.json",
+  "id": "test-pack",
+  "name": "Test Pack",
+  "version": "1.0.0",
+  "description": "Test pack for unit testing",
+  "template_engine": {
+    "version": "v1",
+    "syntax": "{{variable}}",
+    "features": ["basic_substitution"]
+  },
+  "prompts": {
+    "default": {
+      "id": "default",
+      "name": "Default Bot",
+      "version": "1.0.0",
+      "system_template": "You are a helpful assistant for {{company}}.",
+      "variables": [
+        {
+          "name": "company",
+          "type": "string",
+          "required": false,
+          "default": "Test Company"
+        }
+      ],
+      "parameters": {
+        "temperature": 0.7,
+        "max_tokens": 1000
+      }
+    },
+    "with-tools": {
+      "id": "with-tools",
+      "name": "Tool Bot",
+      "version": "1.0.0",
+      "system_template": "You are an assistant with access to tools.",
+      "tools": ["get_time", "search"],
+      "tool_policy": {
+        "tool_choice": "auto",
+        "max_rounds": 3
+      }
+    }
+  },
+  "tools": {
+    "get_time": {
+      "name": "get_time",
+      "description": "Get the current time",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "timezone": {
+            "type": "string",
+            "description": "Timezone (e.g., UTC, America/New_York)"
+          }
+        },
+        "required": []
+      }
+    },
+    "search": {
+      "name": "search",
+      "description": "Search for information",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          }
+        },
+        "required": ["query"]
+      }
+    }
+  }
+}
