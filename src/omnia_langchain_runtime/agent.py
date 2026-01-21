@@ -12,7 +12,7 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import BaseMessage
 from langchain_core.tools import BaseTool
 from langgraph.prebuilt import create_react_agent
-from langgraph.graph.graph import CompiledGraph
+from langgraph.graph.state import CompiledStateGraph
 
 from promptpack import PromptPack, ToolPolicy
 from promptpack_langchain import PromptPackTemplate
@@ -27,7 +27,7 @@ def create_agent(
     tools: Sequence[BaseTool],
     *,
     model_name: str | None = None,
-) -> CompiledGraph:
+) -> CompiledStateGraph:
     """Create a LangGraph ReAct agent from a PromptPack.
 
     Args:
