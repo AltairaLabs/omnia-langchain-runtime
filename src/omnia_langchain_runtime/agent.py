@@ -68,7 +68,7 @@ def create_agent(
     return agent
 
 
-def _apply_params(llm: BaseChatModel, params: dict[str, Any]) -> BaseChatModel:
+def _apply_params(llm: BaseChatModel, params: dict[str, Any]) -> BaseChatModel:  # type: ignore[return-value]
     """Apply parameters to an LLM.
 
     Args:
@@ -90,7 +90,7 @@ def _apply_params(llm: BaseChatModel, params: dict[str, Any]) -> BaseChatModel:
 
     if bind_params:
         try:
-            return llm.bind(**bind_params)
+            return llm.bind(**bind_params)  # type: ignore[return-value]
         except Exception as e:
             logger.warning("Failed to bind params to LLM: %s", e)
 
@@ -139,4 +139,4 @@ def get_max_iterations(tool_policy: ToolPolicy | None) -> int:
     """
     if tool_policy is None:
         return 5  # Default
-    return tool_policy.max_rounds
+    return int(tool_policy.max_rounds)

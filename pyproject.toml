@@ -58,6 +58,7 @@ dev = [
     "ruff>=0.3.0",
     "mypy>=1.8.0",
     "grpcio-testing>=1.60.0",
+    "types-PyYAML>=6.0.0",
 ]
 all = [
     "omnia-langchain-runtime[redis,dev]",

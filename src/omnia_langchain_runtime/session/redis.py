@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import logging
 from datetime import datetime
+from typing import Any
 
 from langchain_core.messages import (
     AIMessage,
@@ -125,14 +126,14 @@ class RedisSessionStore(SessionStore):
         Returns:
             JSON string representation.
         """
-        messages_data = []
+        messages_data: list[dict[str, Any]] = []
         for msg in session.messages:
-            msg_data = {
+            msg_data: dict[str, Any] = {
                 "type": msg.__class__.__name__,
                 "content": msg.content,
             }
             if hasattr(msg, "additional_kwargs"):
-                msg_data["additional_kwargs"] = msg.additional_kwargs
+                msg_data["additional_kwargs"] = dict(msg.additional_kwargs)
             if isinstance(msg, ToolMessage):
                 msg_data["tool_call_id"] = msg.tool_call_id
             messages_data.append(msg_data)

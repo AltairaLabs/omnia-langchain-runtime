@@ -146,7 +146,7 @@ class LangChainHandler:
 
                 elif event_type == "on_tool_start":
                     # Tool call started
-                    tool_input = event.get("data", {}).get("input", {})
+                    tool_input: dict[str, Any] = event.get("data", {}).get("input", {})
                     run_id = event.get("run_id", "")
                     tool_name = event.get("name", "")
 
@@ -177,7 +177,7 @@ class LangChainHandler:
 
                 elif event_type == "on_llm_end":
                     # Track token usage
-                    llm_output = event.get("data", {}).get("output", {})
+                    llm_output: Any = event.get("data", {}).get("output", {})
                     if hasattr(llm_output, "llm_output") and llm_output.llm_output:
                         usage = llm_output.llm_output.get("token_usage", {})
                         total_input_tokens += usage.get("prompt_tokens", 0)
@@ -248,7 +248,7 @@ class LangChainHandler:
                             }
                         )
 
-            return HumanMessage(content=lc_parts)
+            return HumanMessage(content=lc_parts)  # type: ignore[arg-type]
 
         return HumanMessage(content=content or "")
 
@@ -265,7 +265,8 @@ class LangChainHandler:
         variables_str = metadata.get("variables")
         if variables_str:
             try:
-                return json.loads(variables_str)
+                result: dict[str, Any] = json.loads(variables_str)
+                return result
             except json.JSONDecodeError:
                 logger.warning("Failed to parse variables from metadata")
 

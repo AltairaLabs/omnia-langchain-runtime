@@ -123,7 +123,8 @@ class ToolManager:
         for tool in pack.get_tools_for_prompt(prompt_name):
             handlers[tool.name] = self._create_tool_handler(tool.name)
 
-        return convert_tools(pack, prompt_name, handlers=handlers)
+        tools: list[StructuredTool] = convert_tools(pack, prompt_name, handlers=handlers)
+        return tools
 
     def _create_tool_handler(self, tool_name: str):
         """Create a sync handler function for a tool.

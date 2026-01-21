@@ -62,7 +62,8 @@ class MockChatModel(BaseChatModel):
         with open(file_path) as f:
             data = yaml.safe_load(f) or {}
 
-        return data.get("responses", [])
+        responses: list[dict[str, Any]] = data.get("responses", [])
+        return responses
 
     @property
     def _llm_type(self) -> str:
@@ -148,17 +149,21 @@ class MockChatModel(BaseChatModel):
         for response_config in self.responses:
             pattern = response_config.get("match")
             if pattern and pattern.lower() in user_content.lower():
-                return response_config.get("response", self.default_response)
+                resp: str | dict[str, Any] = response_config.get("response", self.default_response)
+                return resp
 
         # Use sequential responses if available
         if self.responses:
             response = self.responses[self.response_index % len(self.responses)]
             self.response_index += 1
-            return response.get("response", self.default_response)
+            resp2: str | dict[str, Any] = response.get("response", self.default_response)
+            return resp2
 
         # Default echo behavior
         return f"Mock response to: {user_content[:100]}"
 
-    def bind_tools(self, tools: list[Any], **kwargs: Any) -> MockChatModel:
+    def bind_tools(  # type: ignore[override]
+        self, tools: list[Any], **kwargs: Any
+    ) -> MockChatModel:
         """Bind tools to the model (no-op for mock)."""
         return self
