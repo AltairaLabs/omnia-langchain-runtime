@@ -142,9 +142,7 @@ async def serve(handler: LangChainHandler, config: Config) -> None:
     await server.start()
 
     # Start health server in background
-    health_task = asyncio.create_task(
-        _run_health_server(handler, config.health_port)
-    )
+    health_task = asyncio.create_task(_run_health_server(handler, config.health_port))
 
     try:
         await server.wait_for_termination()

@@ -110,9 +110,7 @@ class LangChainHandler:
             # Get tools
             tools = []
             if self.tool_manager:
-                tools = self.tool_manager.get_langchain_tools(
-                    self.pack, self.config.prompt_name
-                )
+                tools = self.tool_manager.get_langchain_tools(self.pack, self.config.prompt_name)
 
             # Create agent
             agent = create_agent(
@@ -235,16 +233,20 @@ class LangChainHandler:
                     lc_parts.append({"type": "text", "text": part.text})
                 elif part.type == "image" and part.media:
                     if part.media.url:
-                        lc_parts.append({
-                            "type": "image_url",
-                            "image_url": {"url": part.media.url},
-                        })
+                        lc_parts.append(
+                            {
+                                "type": "image_url",
+                                "image_url": {"url": part.media.url},
+                            }
+                        )
                     elif part.media.data:
                         data_url = f"data:{part.media.mime_type};base64,{part.media.data}"
-                        lc_parts.append({
-                            "type": "image_url",
-                            "image_url": {"url": data_url},
-                        })
+                        lc_parts.append(
+                            {
+                                "type": "image_url",
+                                "image_url": {"url": data_url},
+                            }
+                        )
 
             return HumanMessage(content=lc_parts)
 

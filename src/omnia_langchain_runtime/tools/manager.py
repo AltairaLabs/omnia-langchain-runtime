@@ -147,9 +147,7 @@ class ToolManager:
                     import concurrent.futures
 
                     with concurrent.futures.ThreadPoolExecutor() as pool:
-                        future = pool.submit(
-                            asyncio.run, self.execute(tool_name, kwargs)
-                        )
+                        future = pool.submit(asyncio.run, self.execute(tool_name, kwargs))
                         result = future.result()
                 else:
                     result = loop.run_until_complete(self.execute(tool_name, kwargs))

@@ -137,12 +137,14 @@ class RedisSessionStore(SessionStore):
                 msg_data["tool_call_id"] = msg.tool_call_id
             messages_data.append(msg_data)
 
-        return json.dumps({
-            "messages": messages_data,
-            "metadata": session.metadata,
-            "created_at": session.created_at.isoformat(),
-            "updated_at": session.updated_at.isoformat(),
-        })
+        return json.dumps(
+            {
+                "messages": messages_data,
+                "metadata": session.metadata,
+                "created_at": session.created_at.isoformat(),
+                "updated_at": session.updated_at.isoformat(),
+            }
+        )
 
     def _deserialize(self, session_id: str, data: str) -> Session:
         """Deserialize a session from JSON.
