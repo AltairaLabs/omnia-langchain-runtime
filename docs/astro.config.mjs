@@ -5,7 +5,8 @@ import starlightThemeGalaxy from 'starlight-theme-galaxy';
 import d2 from 'astro-d2';
 
 export default defineConfig({
-  site: 'https://omnia-langchain-runtime.altairalabs.ai',
+  site: 'https://altairalabs.github.io',
+  base: '/omnia-langchain-runtime',
   integrations: [
     d2(),
     starlight({
