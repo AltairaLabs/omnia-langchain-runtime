@@ -4,9 +4,15 @@ import starlight from '@astrojs/starlight';
 import starlightThemeGalaxy from 'starlight-theme-galaxy';
 import d2 from 'astro-d2';
 
+// Configure via environment variables for easy deployment changes
+// For custom domain: SITE_URL=https://docs.example.com BASE_PATH=
+// For GitHub Pages: SITE_URL=https://org.github.io BASE_PATH=/repo-name
+const siteUrl = process.env.SITE_URL || 'https://altairalabs.github.io';
+const basePath = process.env.BASE_PATH ?? '/omnia-langchain-runtime';
+
 export default defineConfig({
-  site: 'https://altairalabs.github.io',
-  base: '/omnia-langchain-runtime',
+  site: siteUrl,
+  base: basePath,
   integrations: [
     d2(),
     starlight({
@@ -35,7 +41,7 @@ export default defineConfig({
           tag: 'script',
           attrs: {
             type: 'module',
-            src: '/mermaid-init.js',
+            src: `${basePath}/mermaid-init.js`,
           },
         },
       ],

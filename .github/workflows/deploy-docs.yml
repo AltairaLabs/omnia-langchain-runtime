@@ -17,6 +17,12 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  # Docs site configuration - change these when moving to a custom domain
+  # For custom domain: SITE_URL=https://docs.example.com, BASE_PATH=
+  SITE_URL: https://altairalabs.github.io
+  BASE_PATH: /omnia-langchain-runtime
+
 jobs:
   build:
     runs-on: ubuntu-latest
