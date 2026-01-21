@@ -9,6 +9,7 @@ WORKDIR /app
 # Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Create virtual environment
@@ -21,7 +22,11 @@ COPY src/ ./src/
 COPY proto/ ./proto/
 
 # Install the package
+# First install promptpack dependencies from GitHub (not yet on PyPI)
 RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+        "git+https://github.com/AltairaLabs/promptpack-python.git#subdirectory=packages/promptpack" \
+        "git+https://github.com/AltairaLabs/promptpack-python.git#subdirectory=packages/promptpack-langchain" && \
     pip install --no-cache-dir .
 
 # Runtime stage
