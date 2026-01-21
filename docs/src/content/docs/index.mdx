@@ -1,0 +1,40 @@
+---
+title: Omnia LangChain Runtime
+description: A Python-based LangChain runtime for Omnia that enables running LangChain agents while reusing the existing facade architecture and gRPC protocol.
+template: splash
+hero:
+  tagline: Deploy LangChain agents in Kubernetes with the Omnia platform
+  actions:
+    - text: Get Started
+      link: /getting-started/installation/
+      icon: right-arrow
+    - text: View on GitHub
+      link: https://github.com/AltairaLabs/omnia-langchain-runtime
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Features
+
+<CardGrid stagger>
+  <Card title="gRPC Protocol" icon="setting">
+    Implements the `omnia.runtime.v1.RuntimeService` protocol for seamless integration with Omnia.
+  </Card>
+  <Card title="LangChain Integration" icon="puzzle">
+    Uses LangChain and LangGraph for powerful agent orchestration capabilities.
+  </Card>
+  <Card title="Multiple Providers" icon="rocket">
+    Supports Claude, OpenAI, Gemini, and Ollama out of the box.
+  </Card>
+  <Card title="Session Management" icon="document">
+    Memory and Redis session stores for conversation persistence.
+  </Card>
+  <Card title="Tool Support" icon="add-document">
+    HTTP and MCP tool adapters for extending agent capabilities.
+  </Card>
+  <Card title="PromptPack Support" icon="open-book">
+    Uses PromptPack for flexible prompt configuration.
+  </Card>
+</CardGrid>
