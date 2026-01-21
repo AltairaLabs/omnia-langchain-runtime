@@ -46,6 +46,10 @@ proto:
 		--python_out=src/omnia_langchain_runtime \
 		--grpc_python_out=src/omnia_langchain_runtime \
 		proto/runtime.proto
+	# Fix import path to use relative import within the package
+	sed -i.bak 's/^import runtime_pb2/from . import runtime_pb2/' \
+		src/omnia_langchain_runtime/runtime_pb2_grpc.py && \
+		rm -f src/omnia_langchain_runtime/runtime_pb2_grpc.py.bak
 
 # Build Docker image
 docker:
