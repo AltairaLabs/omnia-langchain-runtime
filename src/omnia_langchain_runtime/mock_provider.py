@@ -5,10 +5,9 @@
 
 from __future__ import annotations
 
-import json
 import logging
 from pathlib import Path
-from typing import Any, Iterator, List
+from typing import Any
 
 import yaml
 from langchain_core.callbacks.manager import CallbackManagerForLLMRun
@@ -77,7 +76,7 @@ class MockChatModel(BaseChatModel):
 
     def _generate(
         self,
-        messages: List[BaseMessage],
+        messages: list[BaseMessage],
         stop: list[str] | None = None,
         run_manager: CallbackManagerForLLMRun | None = None,
         **kwargs: Any,
@@ -160,6 +159,6 @@ class MockChatModel(BaseChatModel):
         # Default echo behavior
         return f"Mock response to: {user_content[:100]}"
 
-    def bind_tools(self, tools: list[Any], **kwargs: Any) -> "MockChatModel":
+    def bind_tools(self, tools: list[Any], **kwargs: Any) -> MockChatModel:
         """Bind tools to the model (no-op for mock)."""
         return self

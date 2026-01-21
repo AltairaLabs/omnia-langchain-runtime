@@ -8,7 +8,6 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Literal
 
 
 class ProviderType(str, Enum):
@@ -21,7 +20,7 @@ class ProviderType(str, Enum):
     MOCK = "mock"
 
     @classmethod
-    def from_string(cls, value: str) -> "ProviderType":
+    def from_string(cls, value: str) -> ProviderType:
         """Create from string value."""
         try:
             return cls(value.lower())

@@ -6,14 +6,14 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import BaseMessage
 from langchain_core.tools import BaseTool
-from langgraph.prebuilt import create_react_agent
 from langgraph.graph.state import CompiledStateGraph
-
+from langgraph.prebuilt import create_react_agent
 from promptpack import PromptPack, ToolPolicy
 from promptpack_langchain import PromptPackTemplate
 
@@ -51,9 +51,6 @@ def create_agent(
     params = template.get_parameters()
     if params:
         llm = _apply_params(llm, params)
-
-    # Get tool policy
-    tool_policy = prompt.tool_policy
 
     # Create the agent
     agent = create_react_agent(

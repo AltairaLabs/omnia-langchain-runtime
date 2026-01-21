@@ -10,7 +10,6 @@ import logging
 from typing import Any
 
 from langchain_core.tools import StructuredTool
-
 from promptpack import PromptPack
 
 from omnia_langchain_runtime.tools.adapter import ToolAdapter, ToolAdapterError

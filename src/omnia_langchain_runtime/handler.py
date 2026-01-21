@@ -7,19 +7,18 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Any, AsyncIterator
+from collections.abc import AsyncIterator
+from typing import Any
 
-from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
-
+from langchain_core.messages import AIMessage, HumanMessage
 from promptpack import parse_promptpack
-from promptpack_langchain import PromptPackTemplate
 
 from omnia_langchain_runtime import runtime_pb2
-from omnia_langchain_runtime.agent import create_agent, get_max_iterations
+from omnia_langchain_runtime.agent import create_agent
 from omnia_langchain_runtime.config import Config, SessionType
 from omnia_langchain_runtime.providers import create_provider
-from omnia_langchain_runtime.session import InMemorySessionStore, Session, SessionStore
-from omnia_langchain_runtime.tools import ToolManager, ToolsConfig, load_tools_config
+from omnia_langchain_runtime.session import InMemorySessionStore, SessionStore
+from omnia_langchain_runtime.tools import ToolManager, load_tools_config
 
 logger = logging.getLogger(__name__)
 
@@ -126,10 +125,6 @@ class LangChainHandler:
 
             # Get variables from metadata
             variables = self._extract_variables(metadata)
-
-            # Get max iterations
-            prompt = self.pack.get_prompt(self.config.prompt_name)
-            max_iterations = get_max_iterations(prompt.tool_policy if prompt else None)
 
             # Run agent
             final_content = ""

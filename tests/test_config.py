@@ -9,7 +9,6 @@ from unittest import mock
 import pytest
 
 from omnia_langchain_runtime.config import (
-    Config,
     ConfigError,
     ProviderType,
     SessionType,

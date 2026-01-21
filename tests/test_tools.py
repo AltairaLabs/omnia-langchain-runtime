@@ -9,7 +9,6 @@ import pytest
 
 from omnia_langchain_runtime.tools.config import (
     HandlerConfig,
-    HTTPConfig,
     ToolDefinition,
     ToolsConfig,
     load_tools_config,

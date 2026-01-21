@@ -7,8 +7,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from collections.abc import AsyncIterator
 from concurrent import futures
-from typing import TYPE_CHECKING, AsyncIterator, Iterator
+from typing import TYPE_CHECKING
 
 import grpc
 from grpc import aio
@@ -25,7 +26,7 @@ logger = logging.getLogger(__name__)
 class RuntimeServicer(runtime_pb2_grpc.RuntimeServiceServicer):
     """gRPC servicer implementing the RuntimeService protocol."""
 
-    def __init__(self, handler: "LangChainHandler"):
+    def __init__(self, handler: LangChainHandler):
         """Initialize the servicer.
 
         Args:
@@ -113,7 +114,7 @@ class RuntimeServicer(runtime_pb2_grpc.RuntimeServiceServicer):
             )
 
 
-async def serve(handler: "LangChainHandler", config: Config) -> None:
+async def serve(handler: LangChainHandler, config: Config) -> None:
     """Start the gRPC server.
 
     Args:
@@ -155,15 +156,15 @@ async def serve(handler: "LangChainHandler", config: Config) -> None:
             pass
 
 
-async def _run_health_server(handler: "LangChainHandler", port: int) -> None:
+async def _run_health_server(handler: LangChainHandler, port: int) -> None:
     """Run HTTP health check server.
 
     Args:
         handler: The handler to check health.
         port: Port to listen on.
     """
-    from http.server import HTTPServer, BaseHTTPRequestHandler
     import threading
+    from http.server import BaseHTTPRequestHandler, HTTPServer
 
     class HealthHandler(BaseHTTPRequestHandler):
         def do_GET(self) -> None:
