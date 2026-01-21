@@ -54,8 +54,8 @@ tools = load_tools("/path/to/tools.yaml")
 
 ## gRPC API
 
-See the [gRPC Protocol](/grpc/) section for the full protocol definition.
+See the [gRPC Protocol](../grpc/) section for the full protocol definition.
 
 ## Environment Variables
 
-See the [Configuration](/getting-started/configuration/) guide for all supported environment variables.
+See the [Configuration](../getting-started/configuration/) guide for all supported environment variables.

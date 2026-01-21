@@ -55,6 +55,6 @@ spec:
 
 ## Next Steps
 
-- Configure [providers](/providers/) for your LLM backend
-- Set up [session management](/session/) for conversation persistence
-- Add [tools](/tools/) to extend agent capabilities
+- Configure [providers](../../providers/) for your LLM backend
+- Set up [session management](../../session/) for conversation persistence
+- Add [tools](../../tools/) to extend agent capabilities
