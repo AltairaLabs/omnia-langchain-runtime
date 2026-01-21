@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Any
 
 from langchain_core.messages import BaseMessage
@@ -20,8 +20,8 @@ class Session:
     session_id: str
     messages: list[BaseMessage] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
-    created_at: datetime = field(default_factory=lambda: datetime.now(UTC))
-    updated_at: datetime = field(default_factory=lambda: datetime.now(UTC))
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
     def add_message(self, message: BaseMessage) -> None:
         """Add a message to the session.
@@ -30,7 +30,7 @@ class Session:
             message: The message to add.
         """
         self.messages.append(message)
-        self.updated_at = datetime.now(UTC)
+        self.updated_at = datetime.now(timezone.utc)
 
     def add_messages(self, messages: list[BaseMessage]) -> None:
         """Add multiple messages to the session.
@@ -39,12 +39,12 @@ class Session:
             messages: The messages to add.
         """
         self.messages.extend(messages)
-        self.updated_at = datetime.now(UTC)
+        self.updated_at = datetime.now(timezone.utc)
 
     def clear_messages(self) -> None:
         """Clear all messages from the session."""
         self.messages = []
-        self.updated_at = datetime.now(UTC)
+        self.updated_at = datetime.now(timezone.utc)
 
 
 class SessionStore(ABC):

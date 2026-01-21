@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import asyncio
 from collections import OrderedDict
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from omnia_langchain_runtime.session.base import Session, SessionStore
 
@@ -50,7 +50,7 @@ class InMemorySessionStore(SessionStore):
                 return None
 
             # Check if expired
-            if datetime.now(UTC) - session.updated_at > self.ttl:
+            if datetime.now(timezone.utc) - session.updated_at > self.ttl:
                 del self._sessions[session_id]
                 return None
 
@@ -66,7 +66,7 @@ class InMemorySessionStore(SessionStore):
         """
         async with self._lock:
             # Update timestamp
-            session.updated_at = datetime.now(UTC)
+            session.updated_at = datetime.now(timezone.utc)
 
             # Remove if exists to update position
             if session.session_id in self._sessions:
@@ -99,7 +99,7 @@ class InMemorySessionStore(SessionStore):
             Number of sessions removed.
         """
         async with self._lock:
-            now = datetime.now(UTC)
+            now = datetime.now(timezone.utc)
             expired = [
                 sid
                 for sid, session in self._sessions.items()
