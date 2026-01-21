@@ -76,8 +76,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install grpcio-tools
-        run: pip install grpcio-tools
+      - name: Install grpcio-tools and ruff
+        run: pip install grpcio-tools ruff
 
       - name: Generate protobuf files
         run: make proto

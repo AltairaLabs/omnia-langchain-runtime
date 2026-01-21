@@ -78,8 +78,8 @@ select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "T20"]
 ignore = ["E501"]
 
 [tool.ruff.lint.per-file-ignores]
-# Generated protobuf files have non-standard naming
-"src/omnia_langchain_runtime/runtime_pb2*.py" = ["N802", "N803", "E501"]
+# Generated protobuf files - ignore all style issues since they're auto-generated
+"src/omnia_langchain_runtime/runtime_pb2*.py" = ["N802", "N803", "E501", "UP004", "UP009", "I001", "F401"]
 # gRPC servicer methods must match proto definition (PascalCase)
 "src/omnia_langchain_runtime/server.py" = ["N802", "A002"]
 # Re-exported for convenience

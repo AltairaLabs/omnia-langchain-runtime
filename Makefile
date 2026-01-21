@@ -50,6 +50,9 @@ proto:
 	sed -i.bak 's/^import runtime_pb2/from . import runtime_pb2/' \
 		src/omnia_langchain_runtime/runtime_pb2_grpc.py && \
 		rm -f src/omnia_langchain_runtime/runtime_pb2_grpc.py.bak
+	# Format generated files to match ruff style
+	ruff format src/omnia_langchain_runtime/runtime_pb2.py src/omnia_langchain_runtime/runtime_pb2_grpc.py
+	ruff check --fix src/omnia_langchain_runtime/runtime_pb2.py src/omnia_langchain_runtime/runtime_pb2_grpc.py
 
 # Build Docker image
 docker:
