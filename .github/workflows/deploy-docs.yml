@@ -50,7 +50,16 @@ jobs:
 
       - name: Build Astro site
         working-directory: docs
-        run: npm run build
+        run: |
+          echo "Building with SITE_URL=$SITE_URL BASE_PATH=$BASE_PATH"
+          npm run build
+
+      - name: Verify base path in output
+        working-directory: docs
+        run: |
+          echo "Checking for base path in generated HTML..."
+          grep -r "href=\"/omnia-langchain-runtime" dist/ | head -5 || echo "WARNING: Base path not found in links"
+          grep -r "href=\"/getting-started" dist/ | head -5 || echo "OK: No links without base path"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
