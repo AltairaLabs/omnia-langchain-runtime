@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          # Install promptpack dependencies from GitHub (not yet on PyPI)
+          pip install "git+https://github.com/AltairaLabs/promptpack-python.git#subdirectory=packages/promptpack"
+          pip install "git+https://github.com/AltairaLabs/promptpack-python.git#subdirectory=packages/promptpack-langchain"
           pip install -e ".[dev]"
 
       - name: Run tests
@@ -49,6 +52,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install ruff mypy
+          # Install promptpack dependencies from GitHub (not yet on PyPI)
+          pip install "git+https://github.com/AltairaLabs/promptpack-python.git#subdirectory=packages/promptpack"
+          pip install "git+https://github.com/AltairaLabs/promptpack-python.git#subdirectory=packages/promptpack-langchain"
           pip install -e .
 
       - name: Run ruff linter
