@@ -125,6 +125,9 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=sha
+            # Mutable :latest tracks the default branch so consumers (the Omnia
+            # operator's built-in DefaultLangChainImage) can pin a stable name.
+            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
