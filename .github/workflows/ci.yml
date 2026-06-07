@@ -77,7 +77,10 @@ jobs:
           python-version: "3.12"
 
       - name: Install grpcio-tools and ruff
-        run: pip install grpcio-tools ruff
+        # Pin the codegen toolchain: unpinned, grpcio-tools/ruff drift and the
+        # generated *_pb2*.py files no longer match the committed copies, failing
+        # the drift check on every PR regardless of content. Bump deliberately.
+        run: pip install grpcio-tools==1.80.0 ruff==0.15.16
 
       - name: Generate protobuf files
         run: make proto

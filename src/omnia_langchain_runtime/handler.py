@@ -176,12 +176,29 @@ class LangChainHandler:
                     )
 
                 elif event_type == "on_llm_end":
-                    # Track token usage
+                    # Track token usage from LLM response
                     llm_output: Any = event.get("data", {}).get("output", {})
+
+                    # Try standard LangChain format (OpenAI-style)
                     if hasattr(llm_output, "llm_output") and llm_output.llm_output:
                         usage = llm_output.llm_output.get("token_usage", {})
                         total_input_tokens += usage.get("prompt_tokens", 0)
                         total_output_tokens += usage.get("completion_tokens", 0)
+
+                    # Try Ollama format (in response_metadata)
+                    if hasattr(llm_output, "response_metadata"):
+                        metadata = llm_output.response_metadata or {}
+                        total_input_tokens += metadata.get("prompt_eval_count", 0)
+                        total_output_tokens += metadata.get("eval_count", 0)
+
+                    # Try generations format (some providers)
+                    if hasattr(llm_output, "generations"):
+                        for gen_list in llm_output.generations:
+                            for gen in gen_list:
+                                if hasattr(gen, "generation_info") and gen.generation_info:
+                                    info = gen.generation_info
+                                    total_input_tokens += info.get("prompt_eval_count", 0)
+                                    total_output_tokens += info.get("eval_count", 0)
 
             # Add assistant message to session
             if final_content:
@@ -190,6 +207,13 @@ class LangChainHandler:
             # Save session
             await self.session_store.save(session)
 
+            # Log token usage
+            logger.debug(
+                "Token usage: input=%d, output=%d",
+                total_input_tokens,
+                total_output_tokens,
+            )
+
             # Send done message
             yield runtime_pb2.ServerMessage(
                 done=runtime_pb2.Done(
@@ -197,7 +221,7 @@ class LangChainHandler:
                     usage=runtime_pb2.Usage(
                         input_tokens=total_input_tokens,
                         output_tokens=total_output_tokens,
-                        cost_usd=0.0,  # TODO: Calculate cost
+                        cost_usd=0.0,  # TODO: Calculate cost from provider pricing
                     ),
                 )
             )
