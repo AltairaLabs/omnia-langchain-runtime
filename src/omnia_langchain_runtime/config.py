@@ -61,6 +61,9 @@ class Config:
     provider_base_url: str = ""
     provider_ref_name: str = ""
     provider_ref_namespace: str = ""
+    provider_temperature: float | None = None
+    provider_max_tokens: int | None = None
+    provider_top_p: float | None = None
 
     # Context management
     context_window: int = 0  # 0 = no limit
@@ -103,7 +106,7 @@ def load_config() -> Config:
         prompt_name=_get_or_default("OMNIA_PROMPT_NAME", "default"),
         session_type=_parse_session_type(os.getenv("OMNIA_SESSION_TYPE", "memory")),
         session_url=os.getenv("OMNIA_SESSION_URL", ""),
-        session_ttl_seconds=_parse_int("OMNIA_SESSION_TTL", 86400),
+        session_ttl_seconds=_parse_duration_seconds("OMNIA_SESSION_TTL", 86400),
         provider_type=_parse_provider_type(os.getenv("OMNIA_PROVIDER_TYPE", "mock")),
         provider_model=os.getenv("OMNIA_PROVIDER_MODEL", ""),
         provider_base_url=os.getenv("OMNIA_PROVIDER_BASE_URL", ""),
@@ -116,9 +119,12 @@ def load_config() -> Config:
             os.getenv("OMNIA_PROVIDER_MOCK_CONFIG", ""),
         ),
         media_base_path=_get_or_default("OMNIA_MEDIA_BASE_PATH", "/etc/omnia/media"),
-        tools_config_path=os.getenv("OMNIA_TOOLS_CONFIG", ""),
+        tools_config_path=os.getenv("OMNIA_TOOLS_CONFIG_PATH", os.getenv("OMNIA_TOOLS_CONFIG", "")),
         grpc_port=_parse_int("OMNIA_GRPC_PORT", 9000),
         health_port=_parse_int("OMNIA_HEALTH_PORT", 9001),
+        provider_temperature=_parse_float("OMNIA_PROVIDER_TEMPERATURE"),
+        provider_max_tokens=_parse_int_optional("OMNIA_PROVIDER_MAX_TOKENS"),
+        provider_top_p=_parse_float("OMNIA_PROVIDER_TOP_P"),
     )
 
     # Load API keys from environment
@@ -156,6 +162,64 @@ def _parse_int(name: str, default: int) -> int:
         return int(value)
     except ValueError as e:
         raise ConfigError(f"Invalid {name}: must be an integer") from e
+
+
+def _parse_int_optional(name: str) -> int | None:
+    """Parse an optional integer environment variable."""
+    value = os.getenv(name)
+    if not value:
+        return None
+    try:
+        return int(value)
+    except ValueError as e:
+        raise ConfigError(f"Invalid {name}: must be an integer") from e
+
+
+def _parse_float(name: str) -> float | None:
+    """Parse an optional float environment variable."""
+    value = os.getenv(name)
+    if not value:
+        return None
+    try:
+        return float(value)
+    except ValueError as e:
+        raise ConfigError(f"Invalid {name}: must be a number") from e
+
+
+def _parse_duration_seconds(name: str, default: int) -> int:
+    """Parse a duration string (e.g., '1h', '30m', '86400') into seconds."""
+    value = os.getenv(name)
+    if not value:
+        return default
+
+    # If it's already an integer, return it
+    try:
+        return int(value)
+    except ValueError:
+        pass
+
+    # Parse duration strings like "1h", "30m", "1h30m"
+    import re
+
+    total_seconds = 0
+    pattern = re.compile(r"(\d+)([hms])")
+    matches = pattern.findall(value.lower())
+
+    if not matches:
+        raise ConfigError(
+            f"Invalid {name}: must be an integer or duration string (e.g., '1h', '30m')"
+        )
+
+    for amount, unit in matches:
+        amount = int(amount)
+        if unit == "h":
+            total_seconds += amount * 3600
+        elif unit == "m":
+            total_seconds += amount * 60
+        elif unit == "s":
+            total_seconds += amount
+
+    return total_seconds
 
 
 def _parse_provider_type(value: str) -> ProviderType:

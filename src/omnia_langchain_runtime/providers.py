@@ -79,6 +79,14 @@ def _create_claude_provider(config: Config, **kwargs: Any) -> BaseChatModel:
     if config.provider_base_url:
         provider_kwargs["base_url"] = config.provider_base_url
 
+    # Apply provider parameters from config
+    if config.provider_temperature is not None:
+        provider_kwargs["temperature"] = config.provider_temperature
+    if config.provider_top_p is not None:
+        provider_kwargs["top_p"] = config.provider_top_p
+    if config.provider_max_tokens is not None:
+        provider_kwargs["max_tokens"] = config.provider_max_tokens
+
     return ChatAnthropic(**provider_kwargs)
 
 
@@ -104,6 +112,14 @@ def _create_openai_provider(config: Config, **kwargs: Any) -> BaseChatModel:
     if config.provider_base_url:
         provider_kwargs["base_url"] = config.provider_base_url
 
+    # Apply provider parameters from config
+    if config.provider_temperature is not None:
+        provider_kwargs["temperature"] = config.provider_temperature
+    if config.provider_top_p is not None:
+        provider_kwargs["top_p"] = config.provider_top_p
+    if config.provider_max_tokens is not None:
+        provider_kwargs["max_tokens"] = config.provider_max_tokens
+
     return ChatOpenAI(**provider_kwargs)
 
 
@@ -120,11 +136,21 @@ def _create_gemini_provider(config: Config, **kwargs: Any) -> BaseChatModel:
     model = config.provider_model or "gemini-pro"
     api_key = config.api_keys.get("google")
 
-    return ChatGoogleGenerativeAI(
-        model=model,
-        google_api_key=api_key,
+    provider_kwargs: dict[str, Any] = {
+        "model": model,
+        "google_api_key": api_key,
         **kwargs,
-    )
+    }
+
+    # Apply provider parameters from config
+    if config.provider_temperature is not None:
+        provider_kwargs["temperature"] = config.provider_temperature
+    if config.provider_top_p is not None:
+        provider_kwargs["top_p"] = config.provider_top_p
+    if config.provider_max_tokens is not None:
+        provider_kwargs["max_output_tokens"] = config.provider_max_tokens
+
+    return ChatGoogleGenerativeAI(**provider_kwargs)
 
 
 def _create_ollama_provider(config: Config, **kwargs: Any) -> BaseChatModel:
@@ -140,11 +166,21 @@ def _create_ollama_provider(config: Config, **kwargs: Any) -> BaseChatModel:
     model = config.provider_model or "llama3.2"
     base_url = config.provider_base_url or "http://localhost:11434"
 
-    return ChatOllama(
-        model=model,
-        base_url=base_url,
+    provider_kwargs: dict[str, Any] = {
+        "model": model,
+        "base_url": base_url,
         **kwargs,
-    )
+    }
+
+    # Apply provider parameters from config
+    if config.provider_temperature is not None:
+        provider_kwargs["temperature"] = config.provider_temperature
+    if config.provider_top_p is not None:
+        provider_kwargs["top_p"] = config.provider_top_p
+    if config.provider_max_tokens is not None:
+        provider_kwargs["num_predict"] = config.provider_max_tokens
+
+    return ChatOllama(**provider_kwargs)
 
 
 def _create_mock_provider(config: Config, **kwargs: Any) -> BaseChatModel:

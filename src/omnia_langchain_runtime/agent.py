@@ -40,11 +40,11 @@ def create_agent(
     Returns:
         Compiled LangGraph agent.
     """
-    prompt = pack.get_prompt(prompt_name)
-    if prompt is None:
+    prompt_config = pack.get_prompt(prompt_name)
+    if prompt_config is None:
         raise ValueError(f"Prompt '{prompt_name}' not found in pack")
 
-    # Get system prompt
+    # Get system prompt from template
     template = PromptPackTemplate.from_promptpack(pack, prompt_name, model_name=model_name)
 
     # Apply LLM parameters
@@ -52,11 +52,15 @@ def create_agent(
     if params:
         llm = _apply_params(llm, params)
 
-    # Create the agent
+    # Format the system prompt (with empty variables for now - will be populated at runtime)
+    system_prompt = template.format()
+
+    # Create the agent with system prompt
+    # LangGraph 0.2+ uses 'prompt' parameter for system message
     agent = create_react_agent(
         llm,
         tools=list(tools),
-        state_modifier=_create_state_modifier(template),
+        prompt=system_prompt,
     )
 
     logger.info(
@@ -71,28 +75,23 @@ def create_agent(
 def _apply_params(llm: BaseChatModel, params: dict[str, Any]) -> BaseChatModel:  # type: ignore[return-value]
     """Apply parameters to an LLM.
 
+    Note: LLM parameters like temperature, max_tokens, top_p should be configured
+    at provider creation time (via Provider CRD), not at runtime via bind().
+    The bind() method doesn't work consistently across providers (especially Ollama).
+
     Args:
         llm: Language model.
         params: Parameters to apply.
 
     Returns:
-        LLM with parameters applied.
+        LLM (unchanged - params are applied at provider creation).
     """
-    # Most LangChain models support bind() for runtime config
-    bind_params = {}
-
-    if "temperature" in params:
-        bind_params["temperature"] = params["temperature"]
-    if "max_tokens" in params:
-        bind_params["max_tokens"] = params["max_tokens"]
-    if "top_p" in params:
-        bind_params["top_p"] = params["top_p"]
-
-    if bind_params:
-        try:
-            return llm.bind(**bind_params)  # type: ignore[return-value]
-        except Exception as e:
-            logger.warning("Failed to bind params to LLM: %s", e)
+    # Skip runtime param binding - it doesn't work reliably across providers
+    # Temperature and other params should be set via Provider CRD -> providers.py
+    if params:
+        logger.debug(
+            "Skipping runtime params (should be set at provider creation): %s", list(params.keys())
+        )
 
     return llm
 
